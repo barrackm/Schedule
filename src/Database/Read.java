@@ -1,6 +1,7 @@
 package Database;
 
 import Scheduling.RecurringTask;
+import Scheduling.Session;
 import Scheduling.TemporaryTask;
 import Scheduling.User;
 import com.mongodb.client.*;
@@ -19,7 +20,7 @@ public class Read {
         try (MongoClient mongoClient = MongoClients.create(System.getProperty("mongodb.uri"))) {
             MongoDatabase database = mongoClient.getDatabase("testing_schema");
             MongoCollection<Document> collection = database.getCollection("users");
-            FindIterable<Document> findIterable = collection.find(eq("user_id", 1));
+            FindIterable<Document> findIterable = collection.find(eq("user_id", userId));
             String data = findIterable.first().toJson();
             JSONObject jsonObject = new JSONObject(data);
 
@@ -42,7 +43,22 @@ public class Read {
                 var timeIntervalJson = taskJson.getJSONObject("time_interval");
                 long taskTimeInterval = Long.parseLong(timeIntervalJson.getString("$numberLong"));
 
-                recurringTasks.add(new RecurringTask(taskName, taskDuration, taskStartTime, taskTimeInterval));
+                JSONArray sessionsArray = taskJson.getJSONArray("sessions");
+                ArrayList<Session> sessions = new ArrayList<>(sessionsArray.length());
+
+                for (var session : sessionsArray) {
+                    JSONObject sessionJson = (JSONObject) session;
+
+                    var sessionDurationJson = sessionJson.getJSONObject("duration");
+                    long sessionDuration = Long.parseLong(sessionDurationJson.getString("$numberLong"));
+
+                    var sessionStartTimeJson = sessionJson.getJSONObject("session_start_time");
+                    Date sessionStartTime = new Date(sessionStartTimeJson.getLong("$date"));
+
+                    sessions.add(new Session(sessionStartTime, sessionDuration));
+                }
+
+                recurringTasks.add(new RecurringTask(taskName, taskDuration, taskStartTime, taskTimeInterval, sessions));
             }
 
             JSONArray temporaryTasksArray = jsonObject.getJSONArray("temporary_tasks");
@@ -58,7 +74,22 @@ public class Read {
                 var deadlineJson = taskJson.getJSONObject("deadline");
                 Date taskDeadline = new Date(deadlineJson.getLong("$date"));
 
-                temporaryTasks.add(new TemporaryTask(taskName, taskDuration, taskDeadline));
+                JSONArray sessionsArray = taskJson.getJSONArray("sessions");
+                ArrayList<Session> sessions = new ArrayList<>(sessionsArray.length());
+
+                for (var session : sessionsArray) {
+                    JSONObject sessionJson = (JSONObject) session;
+
+                    var sessionDurationJson = sessionJson.getJSONObject("duration");
+                    long sessionDuration = Long.parseLong(sessionDurationJson.getString("$numberLong"));
+
+                    var sessionStartTimeJson = sessionJson.getJSONObject("session_start_time");
+                    Date sessionStartTime = new Date(sessionStartTimeJson.getLong("$date"));
+
+                    sessions.add(new Session(sessionStartTime, sessionDuration));
+                }
+
+                temporaryTasks.add(new TemporaryTask(taskName, taskDuration, taskDeadline, sessions));
             }
 
             return new User(name, sessionLength, temporaryTasks, recurringTasks);

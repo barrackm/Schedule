@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class User {
-    private int userId = 1;
+    private int userId = 2;
     private String name;
     private double preferredSessionDuration;
     private ArrayList<TemporaryTask> temporaryTasks = new ArrayList<TemporaryTask>();
@@ -22,7 +22,6 @@ public class User {
         recurringTasks.add(recurringTask);
         recurringTasks.add(new RecurringTask(this, "Eat Lunch", 1, new Date(), 1));
         temporaryTasks.add(new TemporaryTask(this, "Do Homework", 1, new Date()));
-        System.out.println("done");
         //Write.updateRecurringTask(recurringTask, "duration", 0.5);
     }
 
@@ -76,5 +75,9 @@ public class User {
 
     public int getUserId() {
         return userId;
+    }
+
+    public void setUserId(int userId) { //for testing
+        this.userId = userId;
     }
 }

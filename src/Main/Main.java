@@ -22,7 +22,10 @@ public class Main extends Application {
         //Write.addUser(user);
         //user.addRecurringTask(new RecurringTask(user, "added", 100));
         //user.removeRecurringTask(new RecurringTask(user, "added", 100));
-        Read.getUser(1);
+        //Read.getUser(2);
+        User userTest = Read.getUser(2);
+        userTest.setUserId(3);
+        Write.addUser(userTest);
     }
 
 
