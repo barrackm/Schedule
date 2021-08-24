@@ -27,6 +27,12 @@ public class Read {
             String name = jsonObject.getString("name");
             double sessionLength = jsonObject.getDouble("ideal_session_length");
 
+            var dayStartTimeJson = jsonObject.getJSONObject("day_start_time");
+            long dayStartTime = Long.parseLong(dayStartTimeJson.getString("$numberLong"));
+
+            var dayEndTimeJson = jsonObject.getJSONObject("day_end_time");
+            long dayEndTime = Long.parseLong(dayEndTimeJson.getString("$numberLong"));
+
             JSONArray recurringTasksArray = jsonObject.getJSONArray("recurring_tasks");
             ArrayList<RecurringTask> recurringTasks = new ArrayList<>(recurringTasksArray.length());
 
@@ -92,7 +98,7 @@ public class Read {
                 temporaryTasks.add(new TemporaryTask(taskName, taskDuration, taskDeadline, sessions));
             }
 
-            return new User(name, sessionLength, temporaryTasks, recurringTasks);
+            return new User(userId, name, dayStartTime, dayEndTime, sessionLength, temporaryTasks, recurringTasks);
         }
     }
 }

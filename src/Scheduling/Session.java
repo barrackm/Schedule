@@ -1,5 +1,6 @@
 package Scheduling;
 
+import Database.*;
 import org.bson.Document;
 import java.util.Date;
 
@@ -21,6 +22,18 @@ public class Session {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setStartTime(Date startTime) {
+        Write.updateRecurringTaskSession(this, "session_start_time", startTime);
+    }
+
+    public Date getStartTime() {
+        return startTime;
     }
 
     public Document getDoc() {

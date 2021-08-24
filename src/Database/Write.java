@@ -1,9 +1,6 @@
 package Database;
 
-import Scheduling.RecurringTask;
-import Scheduling.Task;
-import Scheduling.TemporaryTask;
-import Scheduling.User;
+import Scheduling.*;
 import com.mongodb.client.*;
 import com.mongodb.client.model.DeleteOptions;
 import com.mongodb.client.model.UpdateOptions;
@@ -52,7 +49,6 @@ public class Write {
 
             MongoCollection<Document> collection = database.getCollection("users");
 
-
             collection.updateOne(eq("user_id",
                     task.getUser().getUserId()), new Document("$pull", new Document("recurring_tasks", new Document("name", task.getName()))));
         }
@@ -65,7 +61,6 @@ public class Write {
 
             MongoCollection<Document> collection = database.getCollection("users");
 
-
             collection.updateOne(eq("user_id",
                     task.getUser().getUserId()), new Document("$set", new Document("recurring_tasks.$[element]." + field, value)),
                     new UpdateOptions().arrayFilters(Arrays.asList(eq("element.name", task.getName()))));
@@ -73,6 +68,24 @@ public class Write {
 
         }
     }
+
+    public static void updateRecurringTaskSession(Session session, String field, Object value) { //update memory after
+        try (MongoClient mongoClient = MongoClients.create(System.getProperty("mongodb.uri"))) {
+
+            MongoDatabase database = mongoClient.getDatabase("testing_schema");
+
+            MongoCollection<Document> collection = database.getCollection("users");
+
+            System.out.println(collection.updateOne(eq("user_id",
+                    session.getTask().getUser().getUserId()), new Document("$set", new Document("recurring_tasks.$[element].sessions.$[element2]." + field, value)),
+                    new UpdateOptions().arrayFilters(Arrays.asList(eq("element.name", session.getTask().getName()), eq("element2.session_start_time", session.getStartTime())))));
+
+            System.out.println(session.getTask().getName());
+            System.out.println(session.getStartTime());
+            System.out.println(value);
+        }
+    }
+
     public static void addTemporaryTask(TemporaryTask task) {
         try (MongoClient mongoClient = MongoClients.create(System.getProperty("mongodb.uri"))) {
 

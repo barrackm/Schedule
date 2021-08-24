@@ -42,6 +42,10 @@ public class Task {
         this.sessions = sessions;
     }
 
+    public ArrayList<Session> getSessions() {
+        return sessions;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }

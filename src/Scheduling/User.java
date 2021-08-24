@@ -9,14 +9,19 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class User {
-    private int userId = 2;
+    private int userId;
     private String name;
+    private long dayStartTime;
+    private long dayEndTime;
     private double preferredSessionDuration;
     private ArrayList<TemporaryTask> temporaryTasks = new ArrayList<TemporaryTask>();
     private ArrayList<RecurringTask> recurringTasks = new ArrayList<RecurringTask>();
 
-    public User(String name, double preferredSessionDuration) {
+    public User(int userId, String name, long dayStartTime, long dayEndTime, double preferredSessionDuration) {
+        this.userId = userId; //solve
         this.name = name;
+        this.dayStartTime = dayStartTime;
+        this.dayEndTime = dayEndTime;
         this.preferredSessionDuration = preferredSessionDuration;
         RecurringTask recurringTask = new RecurringTask(this, "Brush Teeth", 1, new Date(), 1);
         recurringTasks.add(recurringTask);
@@ -25,8 +30,11 @@ public class User {
         //Write.updateRecurringTask(recurringTask, "duration", 0.5);
     }
 
-    public User(String name, double preferredSessionDuration, ArrayList<TemporaryTask> temporaryTasks, ArrayList<RecurringTask> recurringTasks) {
+    public User(int userId, String name, long dayStartTime, long dayEndTime, double preferredSessionDuration, ArrayList<TemporaryTask> temporaryTasks, ArrayList<RecurringTask> recurringTasks) {
+        this.userId = userId;
         this.name = name;
+        this.dayStartTime = dayStartTime;
+        this.dayEndTime = dayEndTime;
         this.preferredSessionDuration = preferredSessionDuration;
         for (TemporaryTask task : temporaryTasks) {
             task.setUser(this);
@@ -52,6 +60,8 @@ public class User {
         return new Document("_id", new ObjectId())
                 .append("user_id", this.userId)
                 .append("name", name)
+                .append("day_start_time", this.dayStartTime)
+                .append("day_end_time", this.dayEndTime)
                 .append("ideal_session_length", this.preferredSessionDuration)
                 .append("recurring_tasks", this.getRecurringTasksDoc(recurringTasks))
                 .append("temporary_tasks", this.getTemporaryTasksDoc(temporaryTasks));
@@ -77,7 +87,7 @@ public class User {
         return userId;
     }
 
-    public void setUserId(int userId) { //for testing
-        this.userId = userId;
+    public ArrayList<RecurringTask> getRecurringTasks() {
+        return recurringTasks;
     }
 }
