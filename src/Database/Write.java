@@ -1,20 +1,19 @@
 package Database;
 
-import Scheduling.*;
-import com.mongodb.client.*;
-import com.mongodb.client.model.DeleteOptions;
+import Scheduling.RecurringTask;
+import Scheduling.Session;
+import Scheduling.TemporaryTask;
+import Scheduling.User;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Filters.eq;
 
 public class Write {
 
@@ -35,7 +34,6 @@ public class Write {
             MongoDatabase database = mongoClient.getDatabase("testing_schema");
 
             MongoCollection<Document> collection = database.getCollection("users");
-
 
             collection.updateOne(eq("user_id",
                     task.getUser().getUserId()), new Document("$addToSet", new Document("recurring_tasks", task.getDoc())));
@@ -64,8 +62,6 @@ public class Write {
             collection.updateOne(eq("user_id",
                     task.getUser().getUserId()), new Document("$set", new Document("recurring_tasks.$[element]." + field, value)),
                     new UpdateOptions().arrayFilters(Arrays.asList(eq("element.name", task.getName()))));
-
-
         }
     }
 
@@ -76,13 +72,9 @@ public class Write {
 
             MongoCollection<Document> collection = database.getCollection("users");
 
-            System.out.println(collection.updateOne(eq("user_id",
+            collection.updateOne(eq("user_id",
                     session.getTask().getUser().getUserId()), new Document("$set", new Document("recurring_tasks.$[element].sessions.$[element2]." + field, value)),
-                    new UpdateOptions().arrayFilters(Arrays.asList(eq("element.name", session.getTask().getName()), eq("element2.session_start_time", session.getStartTime())))));
-
-            System.out.println(session.getTask().getName());
-            System.out.println(session.getStartTime());
-            System.out.println(value);
+                    new UpdateOptions().arrayFilters(Arrays.asList(eq("element.name", session.getTask().getName()), eq("element2.session_start_time", session.getStartTime()))));
         }
     }
 
@@ -92,7 +84,6 @@ public class Write {
             MongoDatabase database = mongoClient.getDatabase("testing_schema");
 
             MongoCollection<Document> collection = database.getCollection("users");
-
 
             collection.updateOne(eq("user_id",
                     task.getUser().getUserId()), new Document("$addToSet", new Document("temporary_tasks", task.getDoc())));
@@ -106,7 +97,6 @@ public class Write {
 
             MongoCollection<Document> collection = database.getCollection("users");
 
-
             collection.updateOne(eq("user_id",
                     task.getUser().getUserId()), new Document("$pull", new Document("temporary_tasks", new Document("name", task.getName()))));
         }
@@ -119,12 +109,22 @@ public class Write {
 
             MongoCollection<Document> collection = database.getCollection("users");
 
-
             collection.updateOne(eq("user_id",
                     task.getUser().getUserId()), new Document("$set", new Document("temporary_tasks.$[element]." + field, value)),
                     new UpdateOptions().arrayFilters(Arrays.asList(eq("element.name", task.getName()))));
+        }
+    }
 
+    public static void updateTemporaryTaskSession(Session session, String field, Object value) { //update memory after
+        try (MongoClient mongoClient = MongoClients.create(System.getProperty("mongodb.uri"))) {
 
+            MongoDatabase database = mongoClient.getDatabase("testing_schema");
+
+            MongoCollection<Document> collection = database.getCollection("users");
+
+            collection.updateOne(eq("user_id",
+                    session.getTask().getUser().getUserId()), new Document("$set", new Document("temporary_tasks.$[element].sessions.$[element2]." + field, value)),
+                    new UpdateOptions().arrayFilters(Arrays.asList(eq("element.name", session.getTask().getName()), eq("element2.session_start_time", session.getStartTime()))));
         }
     }
 }

@@ -1,5 +1,6 @@
 package Scheduling;
 
+import Database.Write;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -34,5 +35,15 @@ public class TemporaryTask extends Task {
         sessions.add(new Session(this, new Date(1111000), this.getDuration()));
         sessions.add(new Session(this, new Date(1111111000), this.getDuration()));
         return sessions;
+    }
+
+    public void changeName(String name) {
+        Write.updateTemporaryTask(this, "name", name);
+        this.setName(name);
+    }
+
+    public void changeDuration(long duration) {
+        Write.updateTemporaryTask(this, "duration", duration);
+        this.setDuration(duration);
     }
 }

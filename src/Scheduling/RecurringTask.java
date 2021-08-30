@@ -52,10 +52,12 @@ public class RecurringTask extends Task{
     }
 
     public void changeStartTime(Date startTime) {
+        Write.updateRecurringTask(this, "start_time", startTime);
         this.startTime = startTime;
     }
 
     public void changeTimeBetween(long timeBetween) {
+        Write.updateRecurringTask(this, "time_interval", timeBetween);
         this.timeBetween = timeBetween;
     }
 }

@@ -30,6 +30,12 @@ public class Session {
 
     public void setStartTime(Date startTime) {
         Write.updateRecurringTaskSession(this, "session_start_time", startTime);
+        this.startTime = startTime;
+    }
+
+    public void setDuration(long duration) {
+        Write.updateRecurringTaskSession(this, "duration", duration);
+        this.duration = duration;
     }
 
     public Date getStartTime() {
