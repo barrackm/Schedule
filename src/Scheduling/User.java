@@ -90,4 +90,8 @@ public class User {
     public ArrayList<RecurringTask> getRecurringTasks() {
         return recurringTasks;
     }
+
+    public ArrayList<TemporaryTask> getTemporaryTasks() {
+        return temporaryTasks;
+    }
 }

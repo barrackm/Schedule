@@ -5,7 +5,7 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Task {
+public class Task implements Comparable {
     private User user;
     private String name;
     private long duration;
@@ -66,8 +66,47 @@ public class Task {
         this.duration = duration;
     }
 
-    protected long getDuration() {
+    public long getDuration() {
         return this.duration;
     }
 
+    public static String durationToString(long duration) {
+        if (duration > 3600000) {
+            if ((int) (duration % 3600000) / 60000 == 0) {
+                return (int) duration / 3600000 + ":" + "00";
+            }
+            return (int) duration / 3600000 + ":" + (int) (duration % 3600000) / 60000;
+        } else {
+            return (int) duration / 60000  + " minutes";
+        }
+    }
+
+    public static String dateTruncate(Date date) {
+        String s = date.toString();
+        StringBuilder newS = new StringBuilder();
+        boolean colonFound = false;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == ':') {
+                if (colonFound) {
+                    break;
+                }
+                else {
+                    colonFound = true;
+                }
+            }
+            newS.append(c);
+        }
+        return newS.toString();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Task task = (Task) o;
+        int diff = (int) ((int) task.getSessions().get(0).getStartTime().getTime() -
+                this.getSessions().get(0).getStartTime().getTime());
+        if (diff > 0) return 1;
+        else if (diff < 0) return -1;
+        return diff;
+    }
 }

@@ -34,6 +34,10 @@ public class RecurringTask extends Task{
                 .append("time_interval", timeBetween);
     }
 
+    public long getTimeBetween() {
+        return timeBetween;
+    }
+
     private ArrayList<Session> generateSessions() {
         ArrayList<Session> sessions = new ArrayList<>();
         sessions.add(new Session(this, new Date(100000), this.getDuration()));
