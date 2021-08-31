@@ -6,6 +6,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class HomePane extends BorderPane {
@@ -18,12 +19,17 @@ public class HomePane extends BorderPane {
     }
     public HomePane(User user) {
         this.user = user;
-        MonthPane monthPane = new MonthPane(user, new Date());
+        LocalDate today = LocalDate.now();
+        MonthPane monthPane = new MonthPane(this, user, today.minusDays(today.getDayOfMonth() - 1));
         TaskListPane taskListPane = new TaskListPane(user);
         this.setLeft(monthPane);
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(taskListPane);
         this.setRight(scrollPane);
+    }
+
+    public void setMonthPane(MonthPane monthPane) {
+
     }
 
     public void setUser(User user) {

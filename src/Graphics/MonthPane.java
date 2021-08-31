@@ -2,6 +2,7 @@ package Graphics;
 
 import Scheduling.User;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -18,19 +19,49 @@ import java.util.Date;
 public class MonthPane extends VBox {
     private LocalDate localDate;
     private Month month;
-    public MonthPane(User user, Date date) {
+    private User user;
+    private LocalDate monthStart;
+    public MonthPane(HomePane homePane, User user, LocalDate localDate) {
         this.setMinWidth(400);
         this.setPadding(new Insets(50, 50, 50, 50));
-        this.localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(31); //remove plus days thing
+        this.localDate = localDate; //remove plus days thing
         this.month = localDate.getMonth();
-        this.getChildren().add(new Label(month.toString()));
+        this.user = user;
+        this.monthStart = localDate;
+
+        BorderPane titlePane = new BorderPane();
+        Button prevMonthBtn = new Button("<<");
+        Button nextMonthBtn = new Button(">>");
+
+        prevMonthBtn.setOnAction(e -> {
+            System.out.println(monthStart);
+            monthStart = monthStart.minusDays(1);
+            System.out.println(monthStart);
+            Month prevMonth = monthStart.getMonth();
+            monthStart = monthStart.minusDays(prevMonth.length(monthStart.isLeapYear()) - 1);
+            System.out.println(monthStart);
+            homePane.setLeft(new MonthPane(homePane, user, monthStart));
+        });
+        nextMonthBtn.setOnAction(e -> {
+            monthStart = monthStart.plusDays(month.length(monthStart.isLeapYear()));
+            homePane.setLeft(new MonthPane(homePane, user, monthStart));
+        });
+
+        titlePane.setLeft(prevMonthBtn);
+        titlePane.setRight(nextMonthBtn);
+        titlePane.setCenter(new Label(month.toString() + "    " + monthStart.getYear()));
+        titlePane.setPadding(new Insets(10, 10, 10, 10));
+
+
+
+        this.getChildren().add(titlePane);
+
         int firstDay = dayOfWeekInt(localDate.getDayOfWeek());
         boolean monthOver = false;
 
         for (int i = 0; i < 6; i++) {
             HBox weekBox = new HBox();
             for (int j = 0; j < 7; j++) {
-                System.out.println(monthOver);
                 if (localDate.getMonth() != month) {
                     monthOver = true;
                 }
