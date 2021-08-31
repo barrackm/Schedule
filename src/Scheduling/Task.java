@@ -74,6 +74,8 @@ public class Task implements Comparable {
         if (duration > 3600000) {
             if ((int) (duration % 3600000) / 60000 == 0) {
                 return (int) duration / 3600000 + ":" + "00";
+            } else if ((int) (duration % 3600000) / 60000 < 10) {
+                return (int) duration / 3600000 + ":0" + (int) (duration % 3600000) / 60000;
             }
             return (int) duration / 3600000 + ":" + (int) (duration % 3600000) / 60000;
         } else {
@@ -103,10 +105,14 @@ public class Task implements Comparable {
     @Override
     public int compareTo(Object o) {
         Task task = (Task) o;
-        int diff = (int) ((int) task.getSessions().get(0).getStartTime().getTime() -
-                this.getSessions().get(0).getStartTime().getTime());
-        if (diff > 0) return 1;
-        else if (diff < 0) return -1;
-        return diff;
+        if (this.getSessions().get(0).getStartTime().getTime() -
+                task.getSessions().get(0).getStartTime().getTime() == 0) {
+            return 0;
+        }
+        long diff = (this.getSessions().get(0).getStartTime().getTime() -
+                task.getSessions().get(0).getStartTime().getTime()) /
+                Math.abs(this.getSessions().get(0).getStartTime().getTime() -
+                        task.getSessions().get(0).getStartTime().getTime());
+        return (int) diff;
     }
 }

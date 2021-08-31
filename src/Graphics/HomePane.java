@@ -2,8 +2,11 @@ package Graphics;
 
 import Scheduling.User;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+
+import java.util.Date;
 
 public class HomePane extends BorderPane {
     private User user;
@@ -15,10 +18,12 @@ public class HomePane extends BorderPane {
     }
     public HomePane(User user) {
         this.user = user;
-        MonthPane monthPane = new MonthPane(user);
+        MonthPane monthPane = new MonthPane(user, new Date());
         TaskListPane taskListPane = new TaskListPane(user);
         this.setLeft(monthPane);
-        this.setRight(taskListPane);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(taskListPane);
+        this.setRight(scrollPane);
     }
 
     public void setUser(User user) {

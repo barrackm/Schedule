@@ -34,7 +34,7 @@ public class TaskDisplayPane extends VBox implements Comparable{
         bottomRow.getChildren().addAll(nextSession, timeInterval);
 
         this.getChildren().addAll(topRow, bottomRow);
-        this.setBorder(new Border(new BorderStroke(Color.BLACK,
+        this.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
     }
@@ -60,7 +60,7 @@ public class TaskDisplayPane extends VBox implements Comparable{
         bottomRow.getChildren().addAll(nextSession);
 
         this.getChildren().addAll(topRow, bottomRow);
-        this.setBorder(new Border(new BorderStroke(Color.BLACK,
+        this.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
     }
@@ -72,7 +72,14 @@ public class TaskDisplayPane extends VBox implements Comparable{
     @Override
     public int compareTo(Object o) {
         TaskDisplayPane taskDisplayPane = (TaskDisplayPane) o;
-        int diff = (int) ((int) taskDisplayPane.getTask().getSessions().get(0).getStartTime().getTime() - this.getTask().getSessions().get(0).getStartTime().getTime());
-        return diff;
+        if (this.getTask().getSessions().get(0).getStartTime().getTime() -
+                taskDisplayPane.getTask().getSessions().get(0).getStartTime().getTime() == 0) {
+            return 0;
+        }
+        long diff = (this.getTask().getSessions().get(0).getStartTime().getTime() -
+                taskDisplayPane.getTask().getSessions().get(0).getStartTime().getTime()) /
+                Math.abs(this.getTask().getSessions().get(0).getStartTime().getTime() -
+                        taskDisplayPane.getTask().getSessions().get(0).getStartTime().getTime());
+        return (int) diff;
     }
 }

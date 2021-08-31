@@ -13,7 +13,6 @@ public class TaskListPane extends VBox {
     private ArrayList<Task> tasks = new ArrayList<>();
     private ArrayList<TaskDisplayPane> taskDisplayPanes = new ArrayList<>();
     public TaskListPane(User user) {
-        this.setMinWidth(150);
 
         for(TemporaryTask tempTask : user.getTemporaryTasks()) {
             tasks.add(tempTask);
@@ -23,15 +22,9 @@ public class TaskListPane extends VBox {
             tasks.add(tempTask);
             taskDisplayPanes.add(new TaskDisplayPane(tempTask));
         }
-        for(TaskDisplayPane taskDisplayPane : taskDisplayPanes) {
-            System.out.println(taskDisplayPane.getTask().getSessions().get(0).getStartTime());
-        }
-        Collections.sort(tasks);
         Collections.sort(tasks);
         Collections.sort(taskDisplayPanes);
-        Collections.sort(taskDisplayPanes);
         for(TaskDisplayPane taskDisplayPane : taskDisplayPanes) {
-            System.out.println(taskDisplayPane.getTask().getSessions().get(0).getStartTime());
             this.getChildren().add(taskDisplayPane); //Will need to sort and add scrolling
         }
     }

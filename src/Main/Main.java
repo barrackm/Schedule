@@ -20,13 +20,16 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        //User user = new User(6, "Michael", 1, 1, 0.5);
+        User user = new User(7, "Michael", 1, 1, 0.5);
         //Write.addUser(user);
-        //user.addRecurringTask(new RecurringTask(user, "added", 100));
-        //user.removeRecurringTask(new RecurringTask(user, "added", 100));
+        for (int i = 0; i < 10; i++) {
+            user.addRecurringTask(new RecurringTask(user, "added", 1000000, new Date(i * 360000000 + 100000000), 11000333));
+        }
+
         //System.out.println(Read.getUser(4).getUserDoc());
-        User userTest = Read.getUser(6);
-        Controller controller = new Controller(primaryStage, userTest);
+        //User userTest = Read.getUser(6);
+        //Controller controller = new Controller(primaryStage, userTest);
+        Controller controller = new Controller(primaryStage, user);
         //System.out.println(userTest.getRecurringTasks().get(0).getSessions().get(0).getDoc());
         //userTest.getRecurringTasks().get(0).getSessions().get(0).setStartTime(new Date());
         //System.out.println(userTest.getRecurringTasks().get(0).getSessions().get(0).getDoc());

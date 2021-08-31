@@ -47,7 +47,7 @@ public class User {
     }
 
     public void addRecurringTask(RecurringTask task) {
-        Write.addRecurringTask(task);
+        //Write.addRecurringTask(task);
         recurringTasks.add(task);
     }
 
